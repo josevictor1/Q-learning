@@ -1,2 +1,2 @@
 # Trabalho3
-Algoritmo Q-learning C++
+Algoritmo Q-learning C++ e Python
