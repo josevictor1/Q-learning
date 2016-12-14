@@ -1,5 +1,7 @@
 #include <iostream>
 #include <time.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 typedef struct problema{
     double matriz_recompensas[16][16];
@@ -10,6 +12,30 @@ typedef struct problema{
     int numero_interacoes;
 
 } Problema;
+
+void melhorcaminho(Problema problema){
+
+    int i,atual,maior;
+    atual = problema.estado_inicial;
+    maior = 1;
+
+    while(atual != problema.estado_meta){
+        for (i = 0; i < 16; i++){
+
+            if(problema.matriz_q[atual][i] > problema.matriz_q[atual][maior]){
+                maior = i;
+            }
+
+        }
+
+        printf(" %d ", maior);
+        atual = maior;
+
+    }
+
+}
+
+
 
 int main(){
 
@@ -81,9 +107,9 @@ int main(){
     imprimematriz(p.matriz_recompensas);
     */
 
-    
-    for(j = 0 ; j < p.numero_interacoes; j++){
-        printf("passou %d\n",j);
+
+    for(j = 0; j < p.numero_interacoes; j++){
+        //printf("passou %d\n",j);
         estadoatual = rand()%16;
 
         while(estadoatual == anterior){
@@ -94,47 +120,65 @@ int main(){
         //std::cout<< "ESTADO ATUAL"<< estadoatual << std::endl;
         anterior = estadoatual;
 
-        while(estadoatual != p.estado_meta){
-            
-            int listavizinhos[16],tamanholistavizinhos = 0;
+        do{
+
+            int listavizinhos[16], tamanholistavizinhos = 0;
 
             for (i = 0; i < 16; i++){
-                
+
                 if(p.matriz_recompensas[estadoatual][i] != -1){
                     listavizinhos[tamanholistavizinhos] = i;
-                    tamanholistavizinhos++; 
+                    tamanholistavizinhos++;
                 }
-            
+
             }
 
             estadoprox = listavizinhos[rand()%tamanholistavizinhos];
 
             maior = p.matriz_q[estadoprox][listavizinhos[0]];
+
             for (i = 0; i < 16; i++){
                 if(p.matriz_q[estadoprox][i] > maior){
-                    maior = p.matriz_q[estadoprox][i]; 
+                    maior = p.matriz_q[estadoprox][i];
                 }
             }
 
             p.matriz_q[estadoatual][estadoprox] =  p.matriz_recompensas[estadoatual][estadoprox] + (p.fator_desconto * maior);
 
-            estadoatual = estadoprox;           
+            estadoatual = estadoprox;
 
-        }
+        }while(estadoatual != p.estado_meta);
 
     }
-    
 
-for (i = 0 ; i <16; i++){
+
     for(j = 0; j<16; j++){
-        printf(" %0.1lf ",p.matriz_q[i][j]);
+
+        printf(" %7d ",j);
+
     }
 
     printf("\n");
-}
 
+    for (i = 0 ; i <16; i++){
 
+        printf(" %3d ",i);
 
+        for(j = 0; j<16; j++){
 
+            if (p.matriz_q[i][j] != 0){
+                printf("  %3.1lf  ",p.matriz_q[i][j]);
+            }
+            else{
+                printf("    -    ");
+            }
+        }
+        printf("\n");
+    }
+
+    std::cout << "Caminho:" << '\n';
+    std::cout << p.estado_inicial << " ";
+
+    melhorcaminho(p);
 
 }
